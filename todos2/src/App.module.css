@@ -1,0 +1,26 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+.form {
+  width: 700px;
+  margin: 20px auto;
+  text-align: left;
+}
+
+.item {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  background: #eee;
+  margin: 5px;
+  padding: 10px;
+  border-radius: 5px;
+  justify-content: space-between;
+}
+
+.item:hover {
+  cursor: pointer;
+  background: #fff;
+  transition: background 0.2s;
+}

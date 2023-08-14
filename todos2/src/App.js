@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react'
 import styles from './App.module.css'
 import { URL_TODOS } from './constants/constants'
+import { TodoItem } from './components/todoItem/todo-item'
 
 function App() {
   const [todos, setTodos] = useState([])
   const [valueInput, setValueInput] = useState('')
   const [isCreating, setIsCreating] = useState(false)
   const [refreshFlag, setRefreshFlag] = useState(false)
-  const [isSerach, setIsSearch] = useState('')
+  const [isSearch, setIsSearch] = useState('')
   const [isSorted, setIsSorted] = useState(false)
 
   const refreshTodos = () => setRefreshFlag(!refreshFlag)
@@ -15,6 +16,7 @@ function App() {
     e.preventDefault()
     setIsSorted(!isSorted)
   }
+
   useEffect(() => {
     if (isSorted) {
       fetch(URL_TODOS + '?_sort=title&_order=asc', {
@@ -24,7 +26,6 @@ function App() {
         .then((rawResponse) => rawResponse.json())
         .then((res) => {
           setTodos(res)
-          console.log(res)
         })
         .catch((err) => console.log('Ошибка', err))
     } else {
@@ -67,68 +68,45 @@ function App() {
     }
   }
 
-  const requestUpdateItem = (e) => {
-    e.preventDefault()
-    if (valueInput.trim()) {
-      fetch(URL_TODOS + `/${e.target.value}`, {
-        method: 'PUT',
-        headers: { 'Content-type': 'application/json;charset=utf-8' },
-        body: JSON.stringify({
-          title: valueInput,
-        }),
-      })
-        .then((rawResponse) => rawResponse.json())
-        .then(() => {
-          refreshTodos()
-        })
-    } else {
-      alert('Поле не должно быть пустым')
-    }
-  }
-
-  const requestDeleteItem = (e) => {
-    e.preventDefault()
-    fetch(URL_TODOS + `/${e.target.value}`, { method: 'DELETE' })
-      .then((rawResponse) => rawResponse.json())
-      .then(() => {
-        refreshTodos()
-      })
-  }
-
-  const search = todos.filter((item) => {
-    return item.title.toLowerCase().includes(isSerach.toLocaleLowerCase())
-  })
-
   return (
     <form className={styles.form}>
-      <div>
+      <div className={styles.inputBlock}>
         <input
           className={styles.input}
           type="text"
           onChange={OnChangeInputValue}
           placeholder="Введите название заметки"
         />
-        <button type="ck" onClick={requestAddItem} disabled={isCreating}>
+        <button
+          className={styles.button}
+          type="submit"
+          onClick={requestAddItem}
+          disabled={isCreating}
+        >
           Добавить запись
         </button>
-        <button onClick={sortedTodo} className={isSorted ? styles.red : ''}>
+      </div>
+      <div className={styles.optionBlock}>
+        <input
+          className={styles.search}
+          type="text"
+          placeholder="Поиск"
+          onChange={changeSearch}
+        />
+        <button
+          type="button"
+          className={isSorted ? styles.sorted : styles.notSorted}
+          onClick={sortedTodo}
+        >
           Сортировка
         </button>
-        <input type="text" placeholder="Поиск" onChange={changeSearch} />
       </div>
-      <div>
-        {search.map(({ id, title }) => (
-          <div className={styles.item} key={id}>
-            {id}. {title}{' '}
-            <button value={id} onClick={requestUpdateItem}>
-              Изменить запись
-            </button>
-            <button value={id} onClick={requestDeleteItem}>
-              Удалить запись
-            </button>
-          </div>
-        ))}
-      </div>
+      <TodoItem
+        isSearch={isSearch}
+        todos={todos}
+        refreshTodos={refreshTodos}
+        valueInput={valueInput}
+      />
     </form>
   )
 }

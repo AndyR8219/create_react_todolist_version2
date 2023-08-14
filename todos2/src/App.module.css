@@ -13,7 +13,7 @@
 .item {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   background: #eee;
-  margin: 5px;
+  margin: 10px;
   padding: 10px;
   border-radius: 5px;
   justify-content: space-between;
@@ -21,6 +21,10 @@
 
 .item:hover {
   cursor: pointer;
-  background: #fff;
+  background: #999999;
   transition: background 0.2s;
+}
+
+.red {
+  background: #ffc628ee;
 }

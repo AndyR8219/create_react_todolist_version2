@@ -7,6 +7,8 @@ function App() {
   const [valueInput, setValueInput] = useState('')
   const [isCreating, setIsCreating] = useState(false)
   const [refreshFlag, setRefreshFlag] = useState(false)
+  const [isSerach, setIsSearch] = useState('')
+  const [isSorted, setIsSorted] = useState(false)
 
   const refreshTodos = () => setRefreshFlag(!refreshFlag)
 
@@ -18,6 +20,10 @@ function App() {
 
   const OnChangeInputValue = ({ target }) => {
     setValueInput(target.value)
+  }
+
+  const changeSearch = ({ target }) => {
+    setIsSearch(target.value)
   }
 
   const requestAddItem = (e) => {
@@ -37,6 +43,7 @@ function App() {
           console.log(res)
         })
         .finally(() => {
+          setValueInput('')
           setIsCreating(false)
         })
     } else {
@@ -73,10 +80,12 @@ function App() {
   }
 
   const search = todos.filter((item) => {
-    return item.title.toLowerCase().includes(valueInput.toLocaleLowerCase())
+    return item.title.toLowerCase().includes(isSerach.toLocaleLowerCase())
   })
 
-  const filterTodo = () => {
+  const filterTodo = (e) => {
+    setIsSorted(!isSorted)
+    e.preventDefault()
     fetch(URL_TODOS + '?_sort=title&_order=asc', {
       method: 'GET',
       headers: { 'Content-type': 'application/json;charset=utf-8' },
@@ -84,36 +93,41 @@ function App() {
       .then((rawResponse) => rawResponse.json())
       .then((res) => {
         setTodos(res)
+        console.log(res)
       })
       .catch((err) => console.log('Ошибка', err))
   }
 
   return (
     <form className={styles.form}>
-      <input
-        className={styles.input}
-        type="text"
-        onChange={OnChangeInputValue}
-        placeholder="Введите название заметки"
-      />
-      <button type="submit" onClick={requestAddItem} disabled={isCreating}>
-        Добавить запись
-      </button>
-
-      <button onClick={filterTodo}>Сортировка</button>
-      <input type="checkbox" isChecked={filterTodo} />
-
-      {search.map(({ id, title }) => (
-        <div className={styles.item} key={id}>
-          {id}. {title}{' '}
-          <button value={id} onClick={requestUpdateItem}>
-            Изменить запись
-          </button>
-          <button value={id} onClick={requestDeleteItem}>
-            Удалить запись
-          </button>
-        </div>
-      ))}
+      <div>
+        <input
+          className={styles.input}
+          type="text"
+          onChange={OnChangeInputValue}
+          placeholder="Введите название заметки"
+        />
+        <button type="ck" onClick={requestAddItem} disabled={isCreating}>
+          Добавить запись
+        </button>
+        <button onClick={filterTodo} className={isSorted ? styles.red : ''}>
+          Сортировка
+        </button>
+        <input type="text" placeholder="Поиск" onChange={changeSearch} />
+      </div>
+      <div>
+        {search.map(({ id, title }) => (
+          <div className={styles.item} key={id}>
+            {id}. {title}{' '}
+            <button value={id} onClick={requestUpdateItem}>
+              Изменить запись
+            </button>
+            <button value={id} onClick={requestDeleteItem}>
+              Удалить запись
+            </button>
+          </div>
+        ))}
+      </div>
     </form>
   )
 }

@@ -11,12 +11,28 @@ function App() {
   const [isSorted, setIsSorted] = useState(false)
 
   const refreshTodos = () => setRefreshFlag(!refreshFlag)
-
+  const sortedTodo = (e) => {
+    e.preventDefault()
+    setIsSorted(!isSorted)
+  }
   useEffect(() => {
-    fetch(URL_TODOS)
-      .then((loadedData) => loadedData.json())
-      .then((loadedTodos) => setTodos(loadedTodos))
-  }, [refreshFlag])
+    if (isSorted) {
+      fetch(URL_TODOS + '?_sort=title&_order=asc', {
+        method: 'GET',
+        headers: { 'Content-type': 'application/json;charset=utf-8' },
+      })
+        .then((rawResponse) => rawResponse.json())
+        .then((res) => {
+          setTodos(res)
+          console.log(res)
+        })
+        .catch((err) => console.log('Ошибка', err))
+    } else {
+      fetch(URL_TODOS)
+        .then((loadedData) => loadedData.json())
+        .then((loadedTodos) => setTodos(loadedTodos))
+    }
+  }, [refreshFlag, isSorted])
 
   const OnChangeInputValue = ({ target }) => {
     setValueInput(target.value)
@@ -83,21 +99,6 @@ function App() {
     return item.title.toLowerCase().includes(isSerach.toLocaleLowerCase())
   })
 
-  const filterTodo = (e) => {
-    setIsSorted(!isSorted)
-    e.preventDefault()
-    fetch(URL_TODOS + '?_sort=title&_order=asc', {
-      method: 'GET',
-      headers: { 'Content-type': 'application/json;charset=utf-8' },
-    })
-      .then((rawResponse) => rawResponse.json())
-      .then((res) => {
-        setTodos(res)
-        console.log(res)
-      })
-      .catch((err) => console.log('Ошибка', err))
-  }
-
   return (
     <form className={styles.form}>
       <div>
@@ -110,7 +111,7 @@ function App() {
         <button type="ck" onClick={requestAddItem} disabled={isCreating}>
           Добавить запись
         </button>
-        <button onClick={filterTodo} className={isSorted ? styles.red : ''}>
+        <button onClick={sortedTodo} className={isSorted ? styles.red : ''}>
           Сортировка
         </button>
         <input type="text" placeholder="Поиск" onChange={changeSearch} />

@@ -2,20 +2,19 @@ import { useState, useEffect } from 'react'
 import styles from './App.module.css'
 import { URL_TODOS } from './constants/constants'
 import { TodoItem } from './components/todoItem/todo-item'
+import { SortedButton } from './components/sortedButton/sorted-button'
+import { SearchInput } from './components/searchInput/search-input'
+import { AddButton } from './components/addButton/add-button'
+import { Input } from './components/input/input'
 
 function App() {
   const [todos, setTodos] = useState([])
   const [valueInput, setValueInput] = useState('')
-  const [isCreating, setIsCreating] = useState(false)
   const [refreshFlag, setRefreshFlag] = useState(false)
   const [isSearch, setIsSearch] = useState('')
   const [isSorted, setIsSorted] = useState(false)
 
   const refreshTodos = () => setRefreshFlag(!refreshFlag)
-  const sortedTodo = (e) => {
-    e.preventDefault()
-    setIsSorted(!isSorted)
-  }
 
   useEffect(() => {
     if (isSorted) {
@@ -35,77 +34,29 @@ function App() {
     }
   }, [refreshFlag, isSorted])
 
-  const OnChangeInputValue = ({ target }) => {
-    setValueInput(target.value)
-  }
-
-  const changeSearch = ({ target }) => {
-    setIsSearch(target.value)
-  }
-
-  const requestAddItem = (e) => {
-    e.preventDefault()
-    if (valueInput.trim()) {
-      setIsCreating(true)
-      fetch(URL_TODOS, {
-        method: 'POST',
-        headers: { 'Content-type': 'application/json;charset=utf-8' },
-        body: JSON.stringify({
-          title: valueInput,
-        }),
-      })
-        .then((rawResponse) => rawResponse.json())
-        .then((res) => {
-          refreshTodos()
-          console.log(res)
-        })
-        .finally(() => {
-          setValueInput('')
-          setIsCreating(false)
-        })
-    } else {
-      alert('Поле не должно быть пустым')
-    }
-  }
-
   return (
     <form className={styles.form}>
       <div className={styles.inputBlock}>
-        <input
-          className={styles.input}
-          type="text"
-          onChange={OnChangeInputValue}
-          placeholder="Введите название заметки"
+        <Input valueInput={valueInput} setValueInput={setValueInput} />
+
+        <AddButton
+          valueInput={valueInput}
+          refreshTodos={refreshTodos}
+          setValueInput={setValueInput}
         />
-        <button
-          className={styles.button}
-          type="submit"
-          onClick={requestAddItem}
-          disabled={isCreating}
-        >
-          Добавить запись
-        </button>
       </div>
+
       <div className={styles.optionBlock}>
-        <input
-          className={styles.search}
-          type="text"
-          placeholder="Поиск"
-          onChange={changeSearch}
-        />
-        <button
-          type="button"
-          className={isSorted ? styles.sorted : styles.notSorted}
-          onClick={sortedTodo}
-        >
-          Сортировка
-        </button>
+        <SearchInput setIsSearch={setIsSearch} />
+        <SortedButton isSorted={isSorted} setIsSorted={setIsSorted} />
       </div>
+
       <TodoItem
         isSearch={isSearch}
         todos={todos}
         refreshTodos={refreshTodos}
         valueInput={valueInput}
+        setValueInput={setValueInput}
       />
     </form>
   )

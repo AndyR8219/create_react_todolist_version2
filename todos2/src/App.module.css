@@ -14,16 +14,6 @@
   display: flex;
 }
 
-.button {
-  display: inline-block;
-  padding: 5px;
-  transition: background-color 0.15s ease-in-out;
-}
-
-.button:hover {
-  background-color: #bdbdbd;
-}
-
 .inputBlock .input {
   width: 80%;
   margin-left: 10px;
@@ -42,29 +32,4 @@
 .optionBlock {
   margin-top: 5px;
   display: flex;
-}
-
-.search {
-  margin-left: 10px;
-  width: 50%;
-  padding: 3px;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-  position: relative;
-  z-index: 2;
-}
-
-.sorted {
-  display: inline-block;
-  padding: 5px;
-  transition: background-color 0.15s ease-in-out;
-  margin-right: 10px;
-  background: rgb(141, 238, 255);
-}
-
-.notSorted {
-  display: inline-block;
-  padding: 5px;
-  transition: background-color 0.15s ease-in-out;
-  margin-right: 10px;
 }

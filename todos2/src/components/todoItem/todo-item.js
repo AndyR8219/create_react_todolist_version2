@@ -2,7 +2,13 @@ import styles from './todo-item.module.css'
 import { UpdateButton } from '../updateButton/update-button'
 import { DeleteButton } from '../deleteButton/delete-button'
 
-export const TodoItem = ({ isSearch, todos, refreshTodos, valueInput }) => {
+export const TodoItem = ({
+  isSearch,
+  todos,
+  refreshTodos,
+  valueInput,
+  setValueInput,
+}) => {
   const searchItem = todos.filter((item) => {
     return item.title.toLowerCase().includes(isSearch.toLocaleLowerCase())
   })
@@ -16,6 +22,7 @@ export const TodoItem = ({ isSearch, todos, refreshTodos, valueInput }) => {
               value={id}
               valueInput={valueInput}
               refreshTodos={refreshTodos}
+              setValueInput={setValueInput}
             />
             <DeleteButton value={id} refreshTodos={refreshTodos} />
           </div>

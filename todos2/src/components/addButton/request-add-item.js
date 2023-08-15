@@ -1,24 +1,30 @@
 import { URL_TODOS } from '../../constants/constants'
 
-export const RequestUpdateItem = (
+export const RequestAddItem = (
   e,
-  refreshTodos,
+  setIsCreating,
   valueInput,
+  refreshTodos,
   setValueInput
 ) => {
   e.preventDefault()
   if (valueInput.trim()) {
-    fetch(URL_TODOS + `/${e.target.value}`, {
-      method: 'PUT',
+    setIsCreating(true)
+    fetch(URL_TODOS, {
+      method: 'POST',
       headers: { 'Content-type': 'application/json;charset=utf-8' },
       body: JSON.stringify({
         title: valueInput,
       }),
     })
       .then((rawResponse) => rawResponse.json())
-      .then(() => {
+      .then((res) => {
         refreshTodos()
+        console.log(res)
+      })
+      .finally(() => {
         setValueInput('')
+        setIsCreating(false)
       })
   } else {
     alert('Поле не должно быть пустым')

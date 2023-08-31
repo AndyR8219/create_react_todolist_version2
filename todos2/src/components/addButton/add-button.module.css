@@ -1,9 +1,0 @@
-.button {
-  display: inline-block;
-  padding: 5px;
-  transition: background-color 0.15s ease-in-out;
-}
-
-.button:hover {
-  background-color: #bdbdbd;
-}

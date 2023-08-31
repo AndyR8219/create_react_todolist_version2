@@ -30,6 +30,57 @@
 }
 
 .optionBlock {
-  margin-top: 5px;
+  margin-top: 10px;
   display: flex;
+}
+
+.optionBlock .search {
+  width: 80%;
+  margin-left: 10px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.inputBlock .button {
+  position: relative;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-left-width: 0;
+}
+.button {
+  display: inline-block;
+  padding: 5px;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.button:hover {
+  cursor: pointer;
+  background-color: #bdbdbd;
+}
+
+.sorted {
+  margin-left: 10px;
+  display: inline-block;
+  padding: 5px;
+  transition: background-color 0.15s ease-in-out;
+  margin-right: 10px;
+  background: rgb(141, 238, 255);
+}
+
+.sorted:hover {
+  background: rgb(0, 217, 255);
+}
+
+.notSorted {
+  margin-left: 10px;
+  display: inline-block;
+  padding: 5px;
+  transition: background-color 0.15s ease-in-out;
+  margin-right: 10px;
+}
+
+.notSorted:hover {
+  background-color: #bdbdbd;
 }

@@ -1,4 +1,4 @@
-import { URL_TODOS } from '../../constants/constants'
+import { URL_TODOS } from '../constants/constants'
 
 export const RequestDeleteItem = (e, refreshTodos) => {
   e.preventDefault()

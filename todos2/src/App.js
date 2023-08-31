@@ -1,18 +1,21 @@
 import { useState, useEffect } from 'react'
 import styles from './App.module.css'
 import { URL_TODOS } from './constants/constants'
-import { TodoItem } from './components/todoItem/todo-item'
-import { SortedButton } from './components/sortedButton/sorted-button'
-import { SearchInput } from './components/searchInput/search-input'
-import { AddButton } from './components/addButton/add-button'
-import { Input } from './components/input/input'
+import {
+  RequestAddItem,
+  SortedItems,
+  TodoList,
+  OnChangeInputValue,
+  OnChangeSearch,
+} from './components/'
 
 function App() {
   const [todos, setTodos] = useState([])
   const [valueInput, setValueInput] = useState('')
-  const [refreshFlag, setRefreshFlag] = useState(false)
   const [isSearch, setIsSearch] = useState('')
   const [isSorted, setIsSorted] = useState(false)
+  const [isCreating, setIsCreating] = useState(false)
+  const [refreshFlag, setRefreshFlag] = useState(false)
 
   const refreshTodos = () => setRefreshFlag(!refreshFlag)
 
@@ -28,30 +31,61 @@ function App() {
         })
         .catch((err) => console.log('Ошибка', err))
     } else {
-      fetch(URL_TODOS)
+      fetch(URL_TODOS, {
+        method: 'GET',
+        headers: { 'Content-type': 'application/json;charset=utf-8' },
+      })
         .then((loadedData) => loadedData.json())
         .then((loadedTodos) => setTodos(loadedTodos))
+        .catch((err) => console.log('Ошибка', err))
     }
   }, [refreshFlag, isSorted])
 
   return (
     <form className={styles.form}>
       <div className={styles.inputBlock}>
-        <Input valueInput={valueInput} setValueInput={setValueInput} />
-
-        <AddButton
-          valueInput={valueInput}
-          refreshTodos={refreshTodos}
-          setValueInput={setValueInput}
+        <input
+          className={styles.input}
+          value={valueInput}
+          type="text"
+          onChange={(e) => OnChangeInputValue(e, setValueInput)}
+          placeholder="Введите название заметки"
         />
+        <button
+          name="addButton"
+          className={styles.button}
+          type="submit"
+          onClick={(e) =>
+            RequestAddItem(
+              e,
+              setIsCreating,
+              valueInput,
+              refreshTodos,
+              setValueInput
+            )
+          }
+          disabled={isCreating}
+        >
+          Добавить запись
+        </button>
       </div>
-
       <div className={styles.optionBlock}>
-        <SearchInput setIsSearch={setIsSearch} />
-        <SortedButton isSorted={isSorted} setIsSorted={setIsSorted} />
+        <input
+          className={styles.search}
+          type="text"
+          placeholder="Поиск"
+          onChange={(e) => OnChangeSearch(e, setIsSearch)}
+        />
+        <button
+          name="sortedButton"
+          type="button"
+          className={isSorted ? styles.sorted : styles.notSorted}
+          onClick={(e) => SortedItems(e, setIsSorted, isSorted)}
+        >
+          Сортировка
+        </button>
       </div>
-
-      <TodoItem
+      <TodoList
         isSearch={isSearch}
         todos={todos}
         refreshTodos={refreshTodos}

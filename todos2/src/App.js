@@ -7,6 +7,8 @@ import {
   TodoList,
   OnChangeInputValue,
   OnChangeSearch,
+  RequestUpdateItem,
+  CancelButton,
 } from './components/'
 
 function App() {
@@ -16,9 +18,9 @@ function App() {
   const [isSorted, setIsSorted] = useState(false)
   const [isCreating, setIsCreating] = useState(false)
   const [refreshFlag, setRefreshFlag] = useState(false)
+  const [idItem, setIdItem] = useState('')
 
   const refreshTodos = () => setRefreshFlag(!refreshFlag)
-
   useEffect(() => {
     if (isSorted) {
       fetch(URL_TODOS + '?_sort=title&_order=asc', {
@@ -51,23 +53,53 @@ function App() {
           onChange={(e) => OnChangeInputValue(e, setValueInput)}
           placeholder="Введите название заметки"
         />
-        <button
-          name="addButton"
-          className={styles.button}
-          type="submit"
-          onClick={(e) =>
-            RequestAddItem(
-              e,
-              setIsCreating,
-              valueInput,
-              refreshTodos,
-              setValueInput
-            )
-          }
-          disabled={isCreating}
-        >
-          Добавить запись
-        </button>
+        {idItem ? (
+          <div>
+            <button
+              name="updateButton"
+              className={styles.button}
+              type="button"
+              onClick={(e) =>
+                RequestUpdateItem(
+                  e,
+                  refreshTodos,
+                  valueInput,
+                  setValueInput,
+                  setIdItem,
+                  idItem
+                )
+              }
+            >
+              Сохранить
+            </button>
+            <button
+              name="cancelButton"
+              className={styles.button}
+              type="button"
+              onClick={() => CancelButton(setValueInput, setIdItem)}
+            >
+              Отмена
+            </button>
+          </div>
+        ) : (
+          <button
+            name="addButton"
+            className={styles.button}
+            type="submit"
+            onClick={(e) =>
+              RequestAddItem(
+                e,
+                setIsCreating,
+                valueInput,
+                refreshTodos,
+                setValueInput
+              )
+            }
+            disabled={isCreating}
+          >
+            Добавить запись
+          </button>
+        )}
       </div>
       <div className={styles.optionBlock}>
         <input
@@ -91,6 +123,7 @@ function App() {
         refreshTodos={refreshTodos}
         valueInput={valueInput}
         setValueInput={setValueInput}
+        setIdItem={setIdItem}
       />
     </form>
   )

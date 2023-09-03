@@ -27,12 +27,12 @@
   cursor: pointer;
 }
 
-.updateButton {
+.changeButton {
   background: rgb(204, 204, 204);
 }
 
-.updateButton:hover {
-  background-color: #bdbdbd;
+.changeButton:hover {
+  background-color: #777777;
   color: white;
   cursor: pointer;
 }

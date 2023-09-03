@@ -1,5 +1,5 @@
 import styles from './todolist.module.css'
-import { RequestDeleteItem, RequestUpdateItem } from '../../components'
+import { RequestDeleteItem, ChangeButton } from '../../components'
 
 export const TodoList = ({
   isSearch,
@@ -7,6 +7,7 @@ export const TodoList = ({
   refreshTodos,
   valueInput,
   setValueInput,
+  setIdItem,
 }) => {
   const searchItem = todos.filter((item) => {
     return item.title.toLowerCase().includes(isSearch.toLocaleLowerCase())
@@ -18,12 +19,18 @@ export const TodoList = ({
           {title}
           <div className={styles.button}>
             <button
-              name="updateButton"
-              className={styles.updateButton}
+              name="changeButton"
+              className={styles.changeButton}
               type="button"
               value={id}
               onClick={(e) =>
-                RequestUpdateItem(e, refreshTodos, valueInput, setValueInput)
+                ChangeButton(
+                  e,
+                  setIdItem,
+                  setValueInput,
+                  valueInput,
+                  refreshTodos
+                )
               }
             >
               Изменить
